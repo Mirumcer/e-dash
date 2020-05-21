@@ -1,2 +1,2 @@
 # e-dash
-ebay dahboard
+ebay dashboard
