@@ -14,7 +14,7 @@ body {
 }
 
 .sideBar {
-    background-color: #18314f;
+    background-color: #00916e;
     display: grid;
     flex-direction: column;
     justify-content: left;
@@ -24,6 +24,7 @@ body {
     height: 100%;
     grid-row: 1/4;
     grid-column: 1/2;
+    box-shadow: 3px 0px 8px rgba(0, 0, 0, .4);
 }
 
 .navbut {
