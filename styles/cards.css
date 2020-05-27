@@ -6,7 +6,8 @@
     margin: 20px;
     grid-column: 2/4;
     grid-row: 2/4;
-    max-width: 1100px;
+    justify-content: center;
+    ;
 }
 
 .saleItem {
@@ -15,10 +16,12 @@
 }
 
 .bigGraph {
-    width: 980px;
     height: 400px;
     color: black;
     text-align: center;
+    width: 68%;
+    align-self: center;
+    max-width: 1100px;
 }
 
 .card {
@@ -26,4 +29,28 @@
     background-color: inherit;
     box-shadow: -3px -3px 12px rgba(255, 255, 255, .8), 3px 3px 8px rgba(0, 0, 0, .1);
     border-radius: 20px;
+}
+
+.cardimg {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10%;
+    width: 50%
+}
+
+.today {
+    color: black;
+    height: 400px;
+    width: 18%;
+}
+
+.middle {
+    width: auto;
+    text-align: center;
+    font-size: 25px;
+    margin-top: 10px;
+}
+
+.cardtitle {
+    margin: 0;
 }

@@ -13,20 +13,6 @@ body {
     height: 100%;
 }
 
-.sideBar {
-    background-color: #00916e;
-    display: grid;
-    flex-direction: column;
-    justify-content: left;
-    align-content: flex-start;
-    text-align: center;
-    width: 300px;
-    height: 100%;
-    grid-row: 1/4;
-    grid-column: 1/2;
-    box-shadow: 3px 0px 8px rgba(0, 0, 0, .4);
-}
-
 .navbut {
     font-size: 1.3em;
     font-weight: 300;
