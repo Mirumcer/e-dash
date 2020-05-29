@@ -44,24 +44,34 @@ function getCurrentWeather() {
 }
 
 function displayWeather(forcast) {
+    console.log(forcast)
     var todayimg = document.getElementById("todayimg")
-    if ([1, 2, 3, 4, 5, 6].includes(forcast.data.icon_code)) {
+    if ([1, 2, 3, 4, 5, 6, 13, 14, 15].includes(forcast.data.icon_code)) {
         console.log("sky is clear")
         if (forcast.data.is_day_time == true) {
             todayimg.src = "images/weather/clear_day.png"
         } else {
             todayimg.src = "images/weather/clear_night.png"
         }
-    } else if ([7, 8, 9].includes(forcast.data.icon_code)) {
-        console.log("sky is cloudy")
+    } else if ([7, 8, 9, 16, 17, 18].includes(forcast.data.icon_code)) {
+        console.log("sky is partly cloudy")
         if (forcast.data.is_day_time == true) {
             todayimg.src = "images/weather/partcloud_day.png"
         } else {
             todayimg.src = "images/weather/partcloud_night.png"
         }
-    } else if ([10, 11, 12].includes(forcast.data.icon_code)) {
+    } else if ([10, 11, 12, 27, 28, 30].includes(forcast.data.icon_code)) {
         console.log("Thunderstorms")
         todayimg.src = "images/weather/thunder.png"
+    } else if ([19, 20, 21, 22].includes(forcast.data.icon_code)) {
+        console.log("sky is cloudy")
+        todayimg.src = "images/weather/cloudy.png"
+    } else if ([23, 25, 31, 33, 35].includes(forcast.data.icon_code)) {
+        console.log("rainy")
+        todayimg.src = "images/weather/rainy.png"
+    } else if ([24, 26, 29, 32, 34].includes(forcast.data.icon_code)) {
+        console.log("snowy")
+        todayimg.src = "images/weather/snow.png"
     }
-    console.log(forcast)
+
 }
