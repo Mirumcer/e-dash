@@ -26,3 +26,7 @@ body {
 .navbut:hover {
     background-color: #F0F0F0;
 }
+
+.loading {
+    : blue;
+}

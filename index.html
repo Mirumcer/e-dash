@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="styles/main.css" />
     <link rel="stylesheet" href="styles/cards.css" />
     <link rel="stylesheet" href="styles/header.css" />
+
     <title>E-Dash</title>
 </head>
 </head>
@@ -23,9 +24,9 @@
         </div>
         <div class="cardContainer">
             <div class="card bigGraph">GRAPH HERE</div>
-            <div class="card today">
-                <div id="todayimg" class="cardimg">
-                    <img src="images/weather/iconfinder_weather-icons-rainy-2_2087714.png" width="100%">
+            <div class="card today" id="today">
+                <div class="cardimg">
+                    <img id="todayimg" class="loading" src="images/dot-transparent-animated-gif-original.gif" width="100%">
                 </div>
                 <div class="middle">
                     <p class="cardtitle">Today</p>
@@ -36,8 +37,10 @@
             <div class="card saleItem"></div>
             <div class="card saleItem"></div>
         </div>
-    </div>
 
+    </div>
+    <script source="scripts/getweather.js"></script>
+    <script src="scripts/test.js"></script>
 </body>
 
 </html>
