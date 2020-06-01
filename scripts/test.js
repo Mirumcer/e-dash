@@ -2,6 +2,7 @@ console.log("pageload")
 const url = "https://api.breezometer.com/";
 const airUrl = "air-quality/v2/"
 const weatherUrl = "weather/v1/current-conditions?"
+const airForcast = "forecast/hourly?"
 var key = "fcd4800cc1134c45a9cfb2e0f7d50e91"
 var todayCard = document.getElementById("today");
 pageload()
@@ -31,8 +32,12 @@ function updatePosition(position) {
     getforcast()
 }
 
-async function getforcast() {
-    request = url + airUrl + "&lat=" + lat + "&lon=" + long + "&key=" + key + "&units=imperial"
+function getforcast() {
+    var request = url + airUrl + airForcast + "lat=" + lat + "&lon=" + long + "&key=" + key + "&hours=" + "32" + "&units=imperial"
+    console.log(request)
+    fetch(request)
+        .then(response => response.json())
+        .then(data => displayForcast(data))
 }
 
 function getCurrentWeather() {
@@ -73,5 +78,17 @@ function displayWeather(forcast) {
         console.log("snowy")
         todayimg.src = "images/weather/snow.png"
     }
+
+}
+
+function displayForcast(forcast) {
+    console.log(forcast)
+    var f1 = document.getElementById("f1")
+    var f2 = document.getElementById("f2")
+    var f3 = document.getElementById("f3")
+    var f4 = document.getElementById("f4")
+
+
+    f1.
 
 }

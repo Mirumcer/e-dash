@@ -1,25 +1,13 @@
-.cardContainer {
-    display: flex;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    vertical-align: top;
-    margin: 20px;
-    grid-column: 2/4;
-    grid-row: 2/4;
-    justify-content: center;
-    ;
-}
-
-.saleItem {
+.forcastCard {
     height: 300px;
-    width: 200px;
+    width: 30%;
 }
 
 .bigGraph {
     height: 400px;
     color: black;
     text-align: center;
-    width: 68%;
+    width: 70%;
     align-self: center;
     max-width: 1100px;
 }
@@ -41,7 +29,7 @@
 .today {
     color: black;
     height: 400px;
-    width: 18%;
+    width: 20%;
 }
 
 .middle {
