@@ -48,7 +48,6 @@ function getCurrentWeather() {
         .then(data => displayWeather(data))
 }
 
-function shouldOpenWindow()
 
 function displayWeather(forcast) {
     console.log(forcast)
