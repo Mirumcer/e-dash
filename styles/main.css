@@ -52,5 +52,8 @@ body {
 
 .quality {
     width: 50%;
-    fill: black;
+}
+
+.loading {
+    justify-content: center;
 }

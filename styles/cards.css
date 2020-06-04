@@ -17,6 +17,7 @@
     background-color: inherit;
     box-shadow: -3px -3px 12px rgba(255, 255, 255, .8), 3px 3px 8px rgba(0, 0, 0, .1);
     border-radius: 20px;
+    color: grey;
 }
 
 .cardimg {
@@ -27,7 +28,6 @@
 }
 
 .today {
-    color: black;
     height: 400px;
     width: 20%;
 }
@@ -40,5 +40,13 @@
 }
 
 .cardtitle {
-    margin: 0;
+    margin: 10px;
+}
+
+.category {
+    font-size: large;
+}
+
+.big {
+    font-size: 1.5em;
 }

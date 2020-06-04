@@ -33,7 +33,7 @@ function updatePosition(position) {
 }
 
 function getforcast() {
-    var request = url + airUrl + airForcast + "lat=" + lat + "&lon=" + long + "&key=" + key + "&hours=" + "32" + "&units=imperial"
+    var request = url + airUrl + airForcast + "lat=" + lat + "&lon=" + long + "&key=" + key + "&hours=" + "17" + "&units=imperial"
     console.log(request)
     fetch(request)
         .then(response => response.json())
@@ -47,6 +47,8 @@ function getCurrentWeather() {
         .then(response => response.json())
         .then(data => displayWeather(data))
 }
+
+function shouldOpenWindow()
 
 function displayWeather(forcast) {
     console.log(forcast)
@@ -78,17 +80,57 @@ function displayWeather(forcast) {
         console.log("snowy")
         todayimg.src = "images/weather/snow.png"
     }
+    temp = Math.round(forcast.data.temperature.value)
+    tempElem = document.getElementById("temperature")
+    tempText = document.createTextNode(temp + "°F")
+    tempElem.appendChild(tempText)
 
+    description = forcast.data.weather_text
+    descriptElem = document.getElementById("description")
+    descriptText = document.createTextNode(description)
+    descriptElem.appendChild(descriptText)
+
+}
+
+function changeAirImg(aqi, container) {
+    if (aqi > 60) {
+        container.src = "images/Air/AirGreen.png"
+    } else if (aqi <= 60 && aqi > 40) {
+        container.src = "images/Air/AirOrange.png"
+    } else if (aqi <= 40 && aqi > 20) {
+        container.src = "images/Air/AirRed.png"
+    } else {
+        container.src = "images/Air/AirWarning.png"
+    }
+}
+
+function updateAirCard(card, forcast) {
+    var cardElem = document.getElementById("f" + card)
+    var aqi = forcast.data[card * 4].indexes.baqi.aqi_display
+    var img = document.getElementById("f" + card + "img")
+    var title = document.getElementById("f" + card + "title")
+
+    changeAirImg(aqi, img)
+
+    var time = new Date(forcast.data[card * 4].datetime)
+    timetext = document.createTextNode(time.toLocaleTimeString())
+    title.appendChild(timetext)
+
+    var cat = document.createTextNode(forcast.data[card * 4].indexes.baqi.category)
+    catElem = document.getElementById("f" + card + "cat")
+    catElem.appendChild(cat)
+
+    var aqiText = document.createTextNode(aqi)
+    aqiElem = document.getElementById("f" + card + "aqi")
+    aqiElem.appendChild(aqiText)
 }
 
 function displayForcast(forcast) {
     console.log(forcast)
-    var f1 = document.getElementById("f1")
-    var f2 = document.getElementById("f2")
-    var f3 = document.getElementById("f3")
-    var f4 = document.getElementById("f4")
 
-
-    f1.
+    updateAirCard(1, forcast)
+    updateAirCard(2, forcast)
+    updateAirCard(3, forcast)
+    updateAirCard(4, forcast)
 
 }
