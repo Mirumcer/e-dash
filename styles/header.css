@@ -6,6 +6,8 @@
     box-shadow: 3px 0px 8px rgba(0, 0, 0, .4);
     grid-column: 1/5;
     grid-row: 1/2;
+    height: 135px;
+    z-index: 3;
 }
 
 .navbut {
@@ -16,6 +18,7 @@
     justify-self: center;
     align-self: center;
     text-align: center;
+    justify-content: center;
 }
 
 .navlogo {
@@ -25,4 +28,23 @@
 .headlogo {
     justify-content: left;
     height: 100%;
+}
+
+.settingsMenu {
+    visibility: hidden;
+    margin: auto;
+    background-color: rgba(220, 220, 220, .4);
+    box-shadow: 0px 0px 25px rgba(150, 150, 150, .6);
+    height: 300px;
+    width: 300px;
+    z-index: 9;
+    border-radius: 20px;
+    backdrop-filter: blur(8px);
+    color: grey;
+    font-weight: 500;
+}
+
+.settingsButton:hover .settingsMenu {
+    visibility: visible;
+    z-index: 9;
 }

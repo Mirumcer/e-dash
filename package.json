@@ -1,0 +1,22 @@
+{
+  "name": "e-dash",
+  "version": "1.0.0",
+  "description": "weather dashboard",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sduncanpdx/e-dash.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sduncanpdx/e-dash/issues"
+  },
+  "homepage": "https://github.com/Sduncanpdx/e-dash#readme",
+  "dependencies": {
+    "chart.js": "^2.9.3"
+  }
+}

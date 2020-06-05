@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="styles/cards.css" />
     <link rel="stylesheet" href="styles/header.css" />
 
+
     <title>E-Dash</title>
 </head>
 </head>
@@ -16,18 +17,41 @@
 <body>
     <div class="page-container">
         <div class="header">
-            <a href="#Home" class="navlogo" ;>
+            <a href="#Home" class="navlogo navbut" ;>
                 <img class="headlogo" src="images/logo simplepng.png"></img>
             </a>
             <a href="#" class="navbut">Location
-                <p>Portland, OR</p>
+                <p id="location"></p>
             </a>
-            <a href="#" class="navbut">Settings</a>
+            <a href="#" class="navbut settingsButton">
+                <p>Settings</p>
+                <div class="settingsMenu">
+                    <div>
+                        <label>Units</label><br>
+                        <label class="radio" for="imperial" id="unitImperial">
+                            <input type="radio" value="imperial" name="units" checked>Imperial
+                        </label>
+                        <label class="radio" for="metric" id="unitMetric">
+                            <input type="radio" value="metric" name="units">Metric
+                        </label>
+                    </div>
+                </div>
+            </a>
         </div>
         <div class="cardContainer">
             <div class="todayContainer">
                 <div class="card bigGraph">
-                    <div id="map"></div>
+                    <div class="top">
+                        <span>
+                            <p>Window should be open</p>
+                        </span>
+
+                    </div>
+                    <div class="bottom">
+                        <div id="graphContainer" class="graphContainer">
+                            <canvas id="graph" class="graph"></canvas>
+                        </div>
+                    </div>
                 </div>
                 <div class="card today" id="today">
                     <div class="cardimg">
@@ -88,7 +112,7 @@
         </div>
 
     </div>
-    <script source="scripts/getweather.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="scripts/test.js"></script>
 </body>
 

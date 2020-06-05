@@ -2,20 +2,40 @@ console.log("pageload")
 const url = "https://api.breezometer.com/";
 const airUrl = "air-quality/v2/"
 const weatherUrl = "weather/v1/current-conditions?"
+const hourlyForcast = "weather/v1/forecast/hourly?"
 const airForcast = "forecast/hourly?"
-var key = "fcd4800cc1134c45a9cfb2e0f7d50e91"
+const locationUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng="
+
+const key = "fcd4800cc1134c45a9cfb2e0f7d50e91"
+const LocationKey = "AIzaSyCZOEuJ7j2TDjha4GJA9Dqd7hBCD-tq28I"
+
+var unit = "imperial"
+
 var todayCard = document.getElementById("today");
 pageload()
+
+document.getElementById('unitImperial').addEventListener('change', function() {
+    console.log("Setting units to imperial.")
+    unit = "imperial"
+    updatePosition()
+})
+document.getElementById('unitMetric').addEventListener('change', function() {
+    console.log("Setting units to metric.")
+    unit = "metric"
+    updatePosition()
+
+})
 
 function pageload() {
     var lat = 0
     var long = 0
     lat, long = getlocation()
+
 }
 
 function getlocation() {
     if (navigator.geolocation) {
-        position = navigator.geolocation.getCurrentPosition(updatePosition);
+        position = navigator.geolocation.getCurrentPosition(updatePositionRaw);
 
     } else {
         return;
@@ -23,17 +43,32 @@ function getlocation() {
     return;
 }
 
-function updatePosition(position) {
+function updatePositionRaw(position) {
     lat = position.coords.latitude
     long = position.coords.longitude
     console.log("Latitude: " + position.coords.latitude + "Longitude: " + position.coords.longitude)
+    updatePosition()
+}
+
+function updatePosition() {
 
     getCurrentWeather()
     getforcast()
+    getHourlyForcast()
+
+    updateLocation()
+}
+
+function updateLocation() {
+    var request = locationUrl + lat + "," + long + "&key=" + LocationKey
+    console.log(request)
+    fetch(request)
+        .then(response => response.json())
+        .then(data => displayLocation(data))
 }
 
 function getforcast() {
-    var request = url + airUrl + airForcast + "lat=" + lat + "&lon=" + long + "&key=" + key + "&hours=" + "17" + "&units=imperial"
+    var request = url + airUrl + airForcast + "lat=" + lat + "&lon=" + long + "&key=" + key + "&hours=" + "17" + "&units=" + unit
     console.log(request)
     fetch(request)
         .then(response => response.json())
@@ -41,13 +76,83 @@ function getforcast() {
 }
 
 function getCurrentWeather() {
-    request = url + weatherUrl + "lat=" + lat + "&lon=" + long + "&key=" + key + "&units=imperial"
+    request = url + weatherUrl + "lat=" + lat + "&lon=" + long + "&key=" + key + "&units=" + unit
     console.log(request)
     fetch(request)
         .then(response => response.json())
         .then(data => displayWeather(data))
 }
 
+function getHourlyForcast() {
+    request = url + hourlyForcast + "lat=" + lat + "&lon=" + long + "&key=" + key + "&units=" + unit + "&hours=" + 12
+    console.log(request)
+    fetch(request)
+        .then(response => response.json())
+        .then(data => populateGraph(data))
+}
+
+function populateGraph(forcast) {
+    var temps = gettemps(forcast)
+    var hourLabels = getHours(forcast)
+    var chartElem = document.getElementById('graph')
+    var ctx = chartElem.getContext('2d')
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: hourLabels,
+            datasets: [{
+                label: "Temp",
+                borderColor: "#00916e",
+                backgroundColor: "	rgba(0, 145, 110, 0.2)",
+                data: temps,
+                fill: true
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+
+            scales: {
+                yAxes: [{
+                    gridLines: {
+                        drawBorder: false,
+                        display: false,
+                    },
+                }],
+                xAxes: [{
+                    gridLines: {
+                        display: false,
+                    },
+                }],
+
+            },
+            legend: {
+                display: false,
+            },
+
+
+        },
+    });
+}
+
+function gettemps(forcast) {
+    var temps = []
+    for (hour of forcast.data) {
+        temps.push(hour.temperature.value)
+    }
+    console.log("temps:" + temps)
+    return temps
+}
+
+function getHours(forcast) {
+    var times = []
+    for (hour of forcast.data) {
+        hour = new Date(hour.datetime)
+        hour = hour.toLocaleTimeString()
+        times.push(hour)
+    }
+    console.log("times:" + times)
+    return times
+}
 
 function displayWeather(forcast) {
     console.log(forcast)
@@ -81,7 +186,13 @@ function displayWeather(forcast) {
     }
     temp = Math.round(forcast.data.temperature.value)
     tempElem = document.getElementById("temperature")
-    tempText = document.createTextNode(temp + "°F")
+    U = ""
+    if (unit == "imperial") {
+        U = "°F"
+    } else {
+        U = "°C"
+    }
+    tempText = document.createTextNode(temp + U)
     tempElem.appendChild(tempText)
 
     description = forcast.data.weather_text
@@ -89,6 +200,14 @@ function displayWeather(forcast) {
     descriptText = document.createTextNode(description)
     descriptElem.appendChild(descriptText)
 
+}
+
+function displayLocation(location) {
+    console.log(location)
+    var locElem = document.getElementById("location")
+    var string = location.results[8].formatted_address
+    var locText = document.createTextNode(string)
+    locElem.appendChild(locText)
 }
 
 function changeAirImg(aqi, container) {

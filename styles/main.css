@@ -35,10 +35,6 @@ body {
     height: 100px;
 }
 
-.navbut:hover {
-    background-color: #F0F0F0;
-}
-
 .forcast {
     justify-content: center;
     display: flex;
