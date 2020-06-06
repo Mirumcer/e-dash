@@ -21,6 +21,11 @@
     justify-content: center;
 }
 
+.navbut p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .navlogo {
     height: 100px;
 }
@@ -47,4 +52,10 @@
 .settingsButton:hover .settingsMenu {
     visibility: visible;
     z-index: 9;
+}
+
+@media (max-width: 800px) {
+    .navlogo {
+        display: none;
+    }
 }
