@@ -3,6 +3,7 @@ const url = "https://api.breezometer.com/";
 const airUrl = "air-quality/v2/"
 const weatherUrl = "weather/v1/current-conditions?"
 const hourlyForcast = "weather/v1/forecast/hourly?"
+const pollen = "pollen/v2/forecast/daily?"
 const airForcast = "forecast/hourly?"
 const locationUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng="
 
@@ -52,6 +53,7 @@ function updatePositionRaw(position) {
 
 function updatePosition() {
 
+    getPollen()
     getCurrentWeather()
     getforcast()
     getHourlyForcast()
@@ -91,6 +93,14 @@ function getHourlyForcast() {
         .then(data => populateGraph(data))
 }
 
+function getPollen() {
+    request = url + pollen + "lat=" + lat + "&lon=" + long + "&key=" + key + "&days=" + 1
+    console.log(request)
+    fetch(request)
+        .then(response => response.json())
+        .then(data => displayPollen(data))
+}
+
 function populateGraph(forcast) {
     var temps = gettemps(forcast)
     var hourLabels = getHours(forcast)
@@ -117,6 +127,9 @@ function populateGraph(forcast) {
                         drawBorder: false,
                         display: false,
                     },
+                    ticks: {
+                        beginAtZero: true
+                    }
                 }],
                 xAxes: [{
                     gridLines: {
@@ -192,13 +205,12 @@ function displayWeather(forcast) {
     } else {
         U = "°C"
     }
-    tempText = document.createTextNode(temp + U)
-    tempElem.appendChild(tempText)
+    tempText = temp + U
+    tempElem.innerHTML = tempText
 
     description = forcast.data.weather_text
     descriptElem = document.getElementById("description")
-    descriptText = document.createTextNode(description)
-    descriptElem.appendChild(descriptText)
+    descriptElem.innerHTML = description
 
 }
 
@@ -206,8 +218,38 @@ function displayLocation(location) {
     console.log(location)
     var locElem = document.getElementById("location")
     var string = location.results[8].formatted_address
-    var locText = document.createTextNode(string)
-    locElem.appendChild(locText)
+    locElem.innerHTML = string
+}
+
+function displayPollen(forcast) {
+    var max = 0
+    var label = "None"
+
+    console.log(forcast)
+
+    if (forcast.data[0].types.grass.index.value > max) {
+        max = forcast.data[0].types.grass.index.value
+        label = forcast.data[0].types.grass.index.category
+    }
+    if (forcast.data[0].types.tree.index.value > max) {
+        max = forcast.data[0].types.tree.index.value
+        label = forcast.data[0].types.tree.index.category
+    }
+    if (forcast.data[0].types.weed.index.value > max) {
+        max = forcast.data[0].types.weed.index.value
+        label = forcast.data[0].types.weed.index.category
+    }
+    const colors = { null: "#00916e", 0: "#00916e", 1: "#00916e", 2: "#00916e", 3: "#879100", 4: "#916300", 5: "#910500" }
+
+    var windowElem = document.getElementById("window")
+    var textLabel = document.getElementById("pollenLabel")
+    textLabel.innerHTML = label
+    textLabel.style.color = colors[max]
+    windowElem.innerHTML = "Pollen Count is "
+    windowElem.append(textLabel)
+
+
+
 }
 
 function changeAirImg(aqi, container) {
@@ -231,16 +273,15 @@ function updateAirCard(card, forcast) {
     changeAirImg(aqi, img)
 
     var time = new Date(forcast.data[card * 4].datetime)
-    timetext = document.createTextNode(time.toLocaleTimeString())
-    title.appendChild(timetext)
+    timetext = time.toLocaleTimeString()
+    title.innerHTML = timetext
 
-    var cat = document.createTextNode(forcast.data[card * 4].indexes.baqi.category)
+    var cat = forcast.data[card * 4].indexes.baqi.category
     catElem = document.getElementById("f" + card + "cat")
-    catElem.appendChild(cat)
+    catElem.innerHTML = cat
 
-    var aqiText = document.createTextNode(aqi)
     aqiElem = document.getElementById("f" + card + "aqi")
-    aqiElem.appendChild(aqiText)
+    aqiElem.innerHTML = aqi
 }
 
 function displayForcast(forcast) {
