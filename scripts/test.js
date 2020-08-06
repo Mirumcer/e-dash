@@ -7,8 +7,8 @@ const pollen = "pollen/v2/forecast/daily?"
 const airForcast = "forecast/hourly?"
 const locationUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng="
 
-const key = "1aa92d24f1cf4a03af42792af4e2fbb5"
-const LocationKey = "AIzaSyCZOEuJ7j2TDjha4GJA9Dqd7hBCD-tq28I"
+const key = ""
+const LocationKey = ""
 
 var unit = "imperial"
 
