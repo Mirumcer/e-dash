@@ -1,14 +1,14 @@
 console.log("pageload")
-const url = "https://api.breezometer.com/";
+const url = "https://api.openweathermap.org";
 const airUrl = "air-quality/v2/"
-const weatherUrl = "weather/v1/current-conditions?"
-const hourlyForcast = "weather/v1/forecast/hourly?"
+const weatherUrl = "/data/2.5/weather?"
+const hourlyForcast = "/data/2.5/forecast/hourly?"
 const pollen = "pollen/v2/forecast/daily?"
-const airForcast = "forecast/hourly?"
+const airForcast = "/data/2.5/air_pollution/forecast?"
 const locationUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng="
 
-const key = ""
-const LocationKey = ""
+const key = "5f101ad9da12c589bde8006e44cc09a5"
+const LocationKey = "AIzaSyDphmMJAriYmjChCZc1-fGhKzLriu8NbSc"
 
 var unit = "imperial"
 
@@ -70,7 +70,7 @@ function updateLocation() {
 }
 
 function getforcast() {
-    var request = url + airUrl + airForcast + "lat=" + lat + "&lon=" + long + "&key=" + key + "&hours=" + "17" + "&units=" + unit
+    var request = url + airForcast + "lat=" + lat + "&lon=" + long + "&appid=" + key + "&units=" + unit
     console.log(request)
     fetch(request)
         .then(response => response.json())
@@ -78,7 +78,7 @@ function getforcast() {
 }
 
 function getCurrentWeather() {
-    request = url + weatherUrl + "lat=" + lat + "&lon=" + long + "&key=" + key + "&units=" + unit
+    request = url + weatherUrl + "lat=" + lat + "&lon=" + long + "&appid=" + key + "&units=" + unit
     console.log(request)
     fetch(request)
         .then(response => response.json())
@@ -86,7 +86,7 @@ function getCurrentWeather() {
 }
 
 function getHourlyForcast() {
-    request = url + hourlyForcast + "lat=" + lat + "&lon=" + long + "&key=" + key + "&units=" + unit + "&hours=" + 12
+    request = url + hourlyForcast + "lat=" + lat + "&lon=" + long + "&appid=" + key + "&units=" + unit
     console.log(request)
     fetch(request)
         .then(response => response.json())
@@ -149,8 +149,8 @@ function populateGraph(forcast) {
 
 function gettemps(forcast) {
     var temps = []
-    for (hour of forcast.data) {
-        temps.push(hour.temperature.value)
+    for (hour of forcast.list) {
+        temps.push(hour.main.temp)
     }
     console.log("temps:" + temps)
     return temps
@@ -170,34 +170,28 @@ function getHours(forcast) {
 function displayWeather(forcast) {
     console.log(forcast)
     var todayimg = document.getElementById("todayimg")
-    if ([1, 2, 3, 4, 5, 6, 13, 14, 15].includes(forcast.data.icon_code)) {
+    var id = forcast.weather[0].id
+    console.log("icon_id", id)
+    if (id == 800) {
         console.log("sky is clear")
-        if (forcast.data.is_day_time == true) {
-            todayimg.src = "images/weather/clear_day.png"
-        } else {
-            todayimg.src = "images/weather/clear_night.png"
-        }
-    } else if ([7, 8, 9, 16, 17, 18].includes(forcast.data.icon_code)) {
+        todayimg.src = "images/weather/clear_day.png"
+    } else if (id == 801) {
         console.log("sky is partly cloudy")
-        if (forcast.data.is_day_time == true) {
-            todayimg.src = "images/weather/partcloud_day.png"
-        } else {
-            todayimg.src = "images/weather/partcloud_night.png"
-        }
-    } else if ([10, 11, 12, 27, 28, 30].includes(forcast.data.icon_code)) {
+        todayimg.src = "images/weather/partcloud_day.png"
+    } else if (id >= 200 && id < 300) {
         console.log("Thunderstorms")
         todayimg.src = "images/weather/thunder.png"
-    } else if ([19, 20, 21, 22].includes(forcast.data.icon_code)) {
+    } else if (id > 801 && id < 900) {
         console.log("sky is cloudy")
         todayimg.src = "images/weather/cloudy.png"
-    } else if ([23, 25, 31, 33, 35].includes(forcast.data.icon_code)) {
+    } else if (id >= 300 && id < 600) {
         console.log("rainy")
         todayimg.src = "images/weather/rainy.png"
-    } else if ([24, 26, 29, 32, 34].includes(forcast.data.icon_code)) {
+    } else if (id >= 600 && id < 700) {
         console.log("snowy")
         todayimg.src = "images/weather/snow.png"
     }
-    temp = Math.round(forcast.data.temperature.value)
+    temp = Math.round(forcast.main.temp)
     tempElem = document.getElementById("temperature")
     U = ""
     if (unit == "imperial") {
@@ -208,7 +202,7 @@ function displayWeather(forcast) {
     tempText = temp + U
     tempElem.innerHTML = tempText
 
-    description = forcast.data.weather_text
+    description = forcast.weather[0].description
     descriptElem = document.getElementById("description")
     descriptElem.innerHTML = description
 
@@ -253,11 +247,11 @@ function displayPollen(forcast) {
 }
 
 function changeAirImg(aqi, container) {
-    if (aqi > 60) {
+    if (aqi == 1) {
         container.src = "images/Air/AirGreen.png"
-    } else if (aqi <= 60 && aqi > 40) {
+    } else if (aqi == 2 || aqi == 3) {
         container.src = "images/Air/AirOrange.png"
-    } else if (aqi <= 40 && aqi > 20) {
+    } else if (aqi == 4) {
         container.src = "images/Air/AirRed.png"
     } else {
         container.src = "images/Air/AirWarning.png"
@@ -266,19 +260,19 @@ function changeAirImg(aqi, container) {
 
 function updateAirCard(card, forcast) {
     var cardElem = document.getElementById("f" + card)
-    var aqi = forcast.data[card * 4].indexes.baqi.aqi_display
+    var aqi = forcast.list[card * 4].main.aqi
     var img = document.getElementById("f" + card + "img")
     var title = document.getElementById("f" + card + "title")
 
     changeAirImg(aqi, img)
 
-    var time = new Date(forcast.data[card * 4].datetime)
+    var time = new Date(forcast.list[card * 4].dt * 1000)
     timetext = time.toLocaleTimeString()
     title.innerHTML = timetext
 
-    var cat = forcast.data[card * 4].indexes.baqi.category
-    catElem = document.getElementById("f" + card + "cat")
-    catElem.innerHTML = cat
+    //var cat = forcast.list[card * 4].main.aqi
+    //catElem = document.getElementById("f" + card + "cat")
+    //catElem.innerHTML = cat
 
     aqiElem = document.getElementById("f" + card + "aqi")
     aqiElem.innerHTML = aqi
