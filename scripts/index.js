@@ -261,14 +261,15 @@ function changeAirImg(aqi, container) {
 
 function updateAirCard(card, forecast) {
     var cardElem = document.getElementById("f" + card)
-    var aqi = forecast.list[card * 4].main.aqi
+    var aqi = forecast.list[card * 2].main.aqi
     var img = document.getElementById("f" + card + "img")
     var title = document.getElementById("f" + card + "title")
 
     changeAirImg(aqi, img)
 
-    var time = new Date(forecast.list[card * 4].dt * 1000)
+    var time = new Date(forecast.list[card * 2].dt * 1000)
     timetext = time.toLocaleTimeString()
+    console.log("forecast index", card * 2, "AQI Time:", timetext)
     title.innerHTML = timetext
 
     //var cat = forecast.list[card * 4].main.aqi
