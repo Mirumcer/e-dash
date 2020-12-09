@@ -60,9 +60,9 @@
 
 .graphContainer {
     flex-shrink: 0;
-    margin-left: -35px;
-    width: 110%;
-    height: 350px;
+    margin-left: -47px;
+    width: 106%;
+    height: 457px;
     font-size: 30px;
 }
 
@@ -93,7 +93,7 @@
     .graphContainer {
         margin-left: -45px;
         width: 505px;
-        height: 400px;
+        height: 460px;
     }
     .tempLabel {
         margin-left: 35%;
