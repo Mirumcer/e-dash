@@ -2,11 +2,14 @@ console.log("pageload")
 const url = "https://api.openweathermap.org";
 const airUrl = "air-quality/v2/"
 const weatherUrl = "/data/2.5/weather?"
-const hourlyForcast = "/data/2.5/forecast/hourly?"
+const hourlyForecast = "/data/2.5/onecall?"
 const pollen = "pollen/v2/forecast/daily?"
-const airForcast = "/data/2.5/air_pollution/forecast?"
+const airforecast = "/data/2.5/air_pollution/forecast?"
 const locationUrl = "https://maps.googleapis.com/maps/api/geocode/json?latlng="
 
+//I know it's pretty bad to have these here, but the keys are locked down
+//so it's not so bad. if I change away from github pages ill move these
+//to be environment variables.
 const key = "5f101ad9da12c589bde8006e44cc09a5"
 const LocationKey = "AIzaSyDphmMJAriYmjChCZc1-fGhKzLriu8NbSc"
 
@@ -55,8 +58,8 @@ function updatePosition() {
 
     getPollen()
     getCurrentWeather()
-    getforcast()
-    getHourlyForcast()
+    getforecast()
+    getHourlyforecast()
 
     updateLocation()
 }
@@ -69,12 +72,12 @@ function updateLocation() {
         .then(data => displayLocation(data))
 }
 
-function getforcast() {
-    var request = url + airForcast + "lat=" + lat + "&lon=" + long + "&appid=" + key + "&units=" + unit
+function getforecast() {
+    var request = url + airforecast + "lat=" + lat + "&lon=" + long + "&appid=" + key + "&units=" + unit
     console.log(request)
     fetch(request)
         .then(response => response.json())
-        .then(data => displayForcast(data))
+        .then(data => displayforecast(data))
 }
 
 function getCurrentWeather() {
@@ -85,8 +88,8 @@ function getCurrentWeather() {
         .then(data => displayWeather(data))
 }
 
-function getHourlyForcast() {
-    request = url + hourlyForcast + "lat=" + lat + "&lon=" + long + "&appid=" + key + "&units=" + unit
+function getHourlyforecast() {
+    request = url + hourlyForecast + "lat=" + lat + "&lon=" + long + "&appid=" + key + "&units=" + unit + "&exclude=curent,minutely,daily,alerts"
     console.log(request)
     fetch(request)
         .then(response => response.json())
@@ -101,9 +104,10 @@ function getPollen() {
         .then(data => displayPollen(data))
 }
 
-function populateGraph(forcast) {
-    var temps = gettemps(forcast)
-    var hourLabels = getHours(forcast)
+function populateGraph(forecast) {
+    console.log("forecast:", forecast)
+    var temps = gettemps(forecast)
+    var hourLabels = getHours(forecast)
     var chartElem = document.getElementById('graph')
     var ctx = chartElem.getContext('2d')
     var myChart = new Chart(ctx, {
@@ -147,19 +151,19 @@ function populateGraph(forcast) {
     });
 }
 
-function gettemps(forcast) {
+function gettemps(forecast) {
     var temps = []
-    for (hour of forcast.list) {
-        temps.push(hour.main.temp)
+    for (hour of forecast.hourly) {
+        temps.push(hour.temp)
     }
     console.log("temps:" + temps)
     return temps
 }
 
-function getHours(forcast) {
+function getHours(forecast) {
     var times = []
-    for (hour of forcast.data) {
-        hour = new Date(hour.datetime)
+    for (hour of forecast.hourly) {
+        hour = new Date(hour.dt * 1000)
         hour = hour.toLocaleTimeString()
         times.push(hour)
     }
@@ -167,10 +171,10 @@ function getHours(forcast) {
     return times
 }
 
-function displayWeather(forcast) {
-    console.log(forcast)
+function displayWeather(forecast) {
+    console.log(forecast)
     var todayimg = document.getElementById("todayimg")
-    var id = forcast.weather[0].id
+    var id = forecast.weather[0].id
     console.log("icon_id", id)
     if (id == 800) {
         console.log("sky is clear")
@@ -191,7 +195,7 @@ function displayWeather(forcast) {
         console.log("snowy")
         todayimg.src = "images/weather/snow.png"
     }
-    temp = Math.round(forcast.main.temp)
+    temp = Math.round(forecast.main.temp)
     tempElem = document.getElementById("temperature")
     U = ""
     if (unit == "imperial") {
@@ -202,7 +206,7 @@ function displayWeather(forcast) {
     tempText = temp + U
     tempElem.innerHTML = tempText
 
-    description = forcast.weather[0].description
+    description = forecast.weather[0].description
     descriptElem = document.getElementById("description")
     descriptElem.innerHTML = description
 
@@ -215,23 +219,23 @@ function displayLocation(location) {
     locElem.innerHTML = string
 }
 
-function displayPollen(forcast) {
+function displayPollen(forecast) {
     var max = 0
     var label = "None"
 
-    console.log(forcast)
+    console.log(forecast)
 
-    if (forcast.data[0].types.grass.index.value > max) {
-        max = forcast.data[0].types.grass.index.value
-        label = forcast.data[0].types.grass.index.category
+    if (forecast.data[0].types.grass.index.value > max) {
+        max = forecast.data[0].types.grass.index.value
+        label = forecast.data[0].types.grass.index.category
     }
-    if (forcast.data[0].types.tree.index.value > max) {
-        max = forcast.data[0].types.tree.index.value
-        label = forcast.data[0].types.tree.index.category
+    if (forecast.data[0].types.tree.index.value > max) {
+        max = forecast.data[0].types.tree.index.value
+        label = forecast.data[0].types.tree.index.category
     }
-    if (forcast.data[0].types.weed.index.value > max) {
-        max = forcast.data[0].types.weed.index.value
-        label = forcast.data[0].types.weed.index.category
+    if (forecast.data[0].types.weed.index.value > max) {
+        max = forecast.data[0].types.weed.index.value
+        label = forecast.data[0].types.weed.index.category
     }
     const colors = { null: "#00916e", 0: "#00916e", 1: "#00916e", 2: "#00916e", 3: "#879100", 4: "#916300", 5: "#910500" }
 
@@ -241,9 +245,6 @@ function displayPollen(forcast) {
     textLabel.style.color = colors[max]
     windowElem.innerHTML = "Pollen Count is "
     windowElem.append(textLabel)
-
-
-
 }
 
 function changeAirImg(aqi, container) {
@@ -258,19 +259,19 @@ function changeAirImg(aqi, container) {
     }
 }
 
-function updateAirCard(card, forcast) {
+function updateAirCard(card, forecast) {
     var cardElem = document.getElementById("f" + card)
-    var aqi = forcast.list[card * 4].main.aqi
+    var aqi = forecast.list[card * 4].main.aqi
     var img = document.getElementById("f" + card + "img")
     var title = document.getElementById("f" + card + "title")
 
     changeAirImg(aqi, img)
 
-    var time = new Date(forcast.list[card * 4].dt * 1000)
+    var time = new Date(forecast.list[card * 4].dt * 1000)
     timetext = time.toLocaleTimeString()
     title.innerHTML = timetext
 
-    //var cat = forcast.list[card * 4].main.aqi
+    //var cat = forecast.list[card * 4].main.aqi
     //catElem = document.getElementById("f" + card + "cat")
     //catElem.innerHTML = cat
 
@@ -278,12 +279,12 @@ function updateAirCard(card, forcast) {
     aqiElem.innerHTML = aqi
 }
 
-function displayForcast(forcast) {
-    console.log(forcast)
+function displayforecast(forecast) {
+    console.log(forecast)
 
-    updateAirCard(1, forcast)
-    updateAirCard(2, forcast)
-    updateAirCard(3, forcast)
-    updateAirCard(4, forcast)
+    updateAirCard(1, forecast)
+    updateAirCard(2, forecast)
+    updateAirCard(3, forecast)
+    updateAirCard(4, forecast)
 
 }
